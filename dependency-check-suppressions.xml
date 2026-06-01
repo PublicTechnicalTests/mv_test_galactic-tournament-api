@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd ">
+    <!--
+    This file contains CVE suppressions for known or false-positive vulnerabilities.
+
+    Documentation: https://jeremylong.github.io/DependencyCheck/general/suppression.html
+
+    Format:
+    <suppression>
+        <notes>Reason for suppression</notes>
+        <cve>CVE-YYYY-XXXX</cve>
+        <or>
+            <cpe>cpe:/a:vendor:product:version</cpe>
+        </or>
+    </suppression>
+
+    Suppression Guidelines:
+    1. Only suppress known vulnerabilities with documented reasons
+    2. Always provide a clear note explaining WHY the CVE is suppressed
+    3. Include mitigation strategies (e.g., "Not exposed to untrusted input")
+    4. Review suppressions quarterly for new patches
+    5. Never suppress HIGH/CRITICAL without security team approval
+    -->
+
+    <!--
+    Example suppression (remove if not applicable):
+
+    <suppression>
+        <notes>Spring Cloud Security CVE - Fixed in newer version, upgrading planned for Q3</notes>
+        <cve>CVE-2023-12345</cve>
+        <or>
+            <cpe>cpe:/a:pivotal_software:spring_cloud:2.3.0</cpe>
+        </or>
+    </suppression>
+    -->
+
+</suppressions>
+
