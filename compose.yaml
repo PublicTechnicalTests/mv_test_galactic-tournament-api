@@ -7,7 +7,7 @@ services:
     container_name: galactic-tournament-db
     environment:
       POSTGRES_DB: galactic_tournament
-      POSTGRES_USER: tournament_user
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: tournament_password
       POSTGRES_INITDB_ARGS: "-c shared_buffers=256MB -c max_connections=100"
     ports:
@@ -18,7 +18,7 @@ services:
     networks:
       - galactic-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tournament_user -d galactic_tournament"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d galactic_tournament"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,8 +35,10 @@ services:
     container_name: galactic-tournament-api
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/galactic_tournament
-      SPRING_DATASOURCE_USERNAME: tournament_user
+      SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: tournament_password
+      DB_URL: jdbc:postgresql://postgres:5432/galactic_tournament
+      DB_USER: postgres
       DB_PASSWORD: tournament_password
       SECURITY_USER: admin
       SECURITY_PASSWORD: admin

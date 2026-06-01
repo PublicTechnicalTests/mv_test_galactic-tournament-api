@@ -5,8 +5,8 @@ spring:
 
   # Data Source Configuration (PostgreSQL)
   datasource:
-    url: jdbc:postgresql://localhost:5432/galactic_tournament
-    username: tournament_user
+    url: ${DB_URL:jdbc:postgresql://local-host:5432/galactic-_tournament}
+    username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:tournament_password}
     driver-class-name: org.postgresql.Driver
     hikari:
