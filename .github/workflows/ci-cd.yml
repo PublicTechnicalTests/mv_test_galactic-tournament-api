@@ -150,7 +150,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-       - name: Extract Metadata
+      - name: Extract Metadata
         id: meta
         run: |
           IMAGE_NAME=${{ github.repository }}
@@ -162,12 +162,12 @@ jobs:
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
           echo "### Docker Image Build" >> $GITHUB_STEP_SUMMARY
           echo "- **Image**: ${IMAGE_NAME}" >> $GITHUB_STEP_SUMMARY
-           echo "- **Tag**: ${IMAGE_TAG}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: ${IMAGE_TAG}" >> $GITHUB_STEP_SUMMARY
 
-       - name: Build Docker Image (Multi-stage)
-         uses: docker/build-push-action@v5
-         with:
-           context: .
+      - name: Build Docker Image (Multi-stage)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
           file: ./Dockerfile
           push: false
           tags: |
