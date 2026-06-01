@@ -1,0 +1,25 @@
+spring:
+  # Override datasource in tests — handled by Testcontainers @ServiceConnection
+  # (the PostgreSQLContainer bean overrides these values automatically)
+
+  security:
+    # Disable OAuth2 JWT validation in tests to avoid contacting a real identity provider.
+    # The full OAuth2 Resource Server security is tested in dedicated security tests.
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ~
+          jwk-set-uri: ~
+
+  # Keep Flyway enabled so migrations are executed against the Testcontainers DB
+  flyway:
+    enabled: true
+
+# Reduce noise in test logs
+logging:
+  level:
+    ROOT: WARN
+    com.technicaltests.mv: INFO
+    org.testcontainers: INFO
+    org.flywaydb: INFO
+

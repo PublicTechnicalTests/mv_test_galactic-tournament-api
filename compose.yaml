@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:16-alpine
+    container_name: galactic-tournament-db
+    environment:
+      POSTGRES_DB: galactic_tournament
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tournament_password
+      POSTGRES_INITDB_ARGS: "-c shared_buffers=256MB -c max_connections=100"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - galactic-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d galactic_tournament"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 0.5
+
+  # Galactic Tournament API Service
+  galactic-tournament-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: galactic-tournament-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/galactic_tournament
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: tournament_password
+      DB_URL: jdbc:postgresql://postgres:5432/galactic_tournament
+      DB_USER: postgres
+      DB_PASSWORD: tournament_password
+      SECURITY_USER: admin
+      SECURITY_PASSWORD: admin
+      JWT_SECRET: your-secret-key-change-in-production
+      JWT_EXPIRATION: 86400000
+      CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:4200,http://localhost:8080"
+      JAVA_OPTS: "-Xms256m -Xmx512m -XX:+UseG1GC"
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - galactic-network
+    restart: unless-stopped
+    mem_limit: 1024m
+    cpus: 1.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  galactic-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
