@@ -23,6 +23,12 @@ LABEL maintainer="dev@technicaltests.com"
 LABEL description="Galactic Tournament API - Tournament management microservice"
 LABEL version="0.1.0"
 
+# Install curl for health checks
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Create non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
@@ -43,8 +49,8 @@ USER appuser
 EXPOSE 8080
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD java -cp app.jar org.springframework.boot.loader.JarLauncher || exit 1
+HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=5 \
+    CMD curl -f http://localhost:8080/api/actuator/health || exit 1
 
 # Set JVM options for production
 ENV JAVA_OPTS="-XX:+UseG1GC \
