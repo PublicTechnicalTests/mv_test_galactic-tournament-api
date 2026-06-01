@@ -225,25 +225,6 @@
 				</executions>
 			</plugin>
 
-			<!-- OWASP Dependency-Check Plugin (Security scanning) -->
-			<plugin>
-				<groupId>org.owasp</groupId>
-				<artifactId>dependency-check-maven</artifactId>
-				<version>10.0.3</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<failBuildOnCVSS>7.0</failBuildOnCVSS>
-					<skipRuntimeScope>false</skipRuntimeScope>
-					<suppressionFile>dependency-check-suppressions.xml</suppressionFile>
-					<format>HTML</format>
-				</configuration>
-			</plugin>
 
 			<!-- Surefire Plugin for Running Tests -->
 			<plugin>

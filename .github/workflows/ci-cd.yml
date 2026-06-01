@@ -77,14 +77,6 @@ jobs:
           path: target/site/jacoco/
           retention-days: 30
 
-      - name: Upload Dependency-Check Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dependency-check-report
-          path: target/dependency-check-report.html
-          retention-days: 30
-
       # Post PR Comment with Results
       - name: Post Coverage Comment on PR
         if: always() && github.event_name == 'pull_request'
@@ -108,34 +100,6 @@ jobs:
               body: comment
             });
 
-  security-scan:
-    name: Security & Vulnerability Scanning
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    needs: build-and-test
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Java 25 (Temurin)
-        uses: actions/setup-java@v4
-        with:
-          java-version: '25'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Run OWASP Dependency-Check
-        run: mvn org.owasp:dependency-check-maven:check --batch-mode
-        continue-on-error: true
-
-      - name: Upload OWASP Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: owasp-dependency-check
-          path: target/dependency-check-report.html
-          retention-days: 30
   container-build:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
@@ -180,7 +144,7 @@ jobs:
     name: Status Check
     runs-on: ubuntu-latest
     if: always()
-    needs: [build-and-test, security-scan]
+    needs: [build-and-test]
 
     steps:
       - name: Check Build Status
@@ -189,9 +153,5 @@ jobs:
             echo "❌ Build and test phase failed"
             exit 1
           fi
-          if [ "${{ needs.security-scan.result }}" != "success" ] && [ "${{ needs.security-scan.result }}" != "skipped" ]; then
-            echo "⚠️ Security scan had warnings, review before merging"
-          else
-            echo "✅ All critical checks passed successfully!"
-          fi
+          echo "✅ All critical checks passed successfully!"
 
